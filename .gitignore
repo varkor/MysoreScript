@@ -1,5 +1,6 @@
-*~
-.*.sw?
-Build
-Debug
-Release
+# Ignore the build and bin directorys
+bin/
+build/
+
+# Exclude Xcode project settings
+*.xcodeproj/

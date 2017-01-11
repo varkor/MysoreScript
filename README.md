@@ -12,6 +12,15 @@ efficiently, but lacks most of the complexity.
 The implementation provides the ability to load code from a file and to run an
 interactive environment.
 
+Building and testing
+--------------------
+```
+brew install llvm
+cmake -H. -Bbuild -DLLVM_CONFIG:FILEPATH=/usr/local/Cellar/llvm/3.9.0/bin/llvm-config
+make -C build
+./bin/mysorescript -f examples/hello.ms
+```
+
 Operators
 ---------
 

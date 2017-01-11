@@ -1,4 +1,4 @@
-#include "Pegmatite/ast.hh"
+#include "../lib/Pegmatite/ast.hh"
 #include "runtime.hh"
 #include "interpreter.hh"
 #include <unordered_set>
