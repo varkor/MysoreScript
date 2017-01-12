@@ -3,9 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 project(mysorescript)
 
 set(mysorescript_CXX_SRCS
-	# Compile the Pegmatite .cc files directly into the program (rather than creating a separate library).
+	# Compile the Pegmatite source files directly into the program (rather than creating a separate library).
 	lib/Pegmatite/ast.cc
 	lib/Pegmatite/parser.cc
+
+	# Compile the MysoreScript source files.
 	src/compiler.cc
 	src/interpreter.cc
 	src/main.cc
@@ -18,7 +20,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 add_executable(mysorescript ${mysorescript_CXX_SRCS})
 # We're using Pegmatite in the RTTI mode.
 add_definitions(-DUSE_RTTI=1)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -I../lib")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set(CLANG_FLAGS "-Wdeprecated -Wno-zero-length-array -Wno-unknown-attributes")

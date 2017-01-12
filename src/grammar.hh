@@ -1,4 +1,4 @@
-#include "../lib/Pegmatite/pegmatite.hh"
+#include "Pegmatite/pegmatite.hh"
 namespace Parser
 {
 	using pegmatite::Rule;
