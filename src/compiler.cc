@@ -7,10 +7,10 @@
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/Support/TargetSelect.h>
 
+using namespace MysoreScript;
 using namespace llvm;
 using llvm::legacy::PassManager;
-using namespace MysoreScript;
-using namespace AST;
+using namespace MysoreScript::AST;
 
 namespace {
 /**

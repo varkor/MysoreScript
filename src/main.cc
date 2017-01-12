@@ -31,6 +31,8 @@
 #include "parser.hh"
 #include "interpreter.hh"
 
+using namespace MysoreScript;
+
 /**
  * Flag indicating whether we should print timing information.
  */

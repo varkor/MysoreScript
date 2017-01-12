@@ -21,13 +21,14 @@ T* gcAlloc(size_t extraBytes=0)
 	return reinterpret_cast<T*>(GC_MALLOC(size));
 }
 }
+
+namespace MysoreScript
+{
+	
 namespace AST
 {
 	struct ClosureDecl;
 }
-
-namespace MysoreScript
-{
 
 struct Object;
 struct Closure;
