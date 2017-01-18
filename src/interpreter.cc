@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string.h>
 #include "parser.hh"
 
@@ -451,7 +452,13 @@ namespace MysoreScript {
 	{
 		// Get the address of the variable corresponding to this symbol and then
 		// load the object stored there.
-		return *c.lookupSymbol(name);
+		Obj *address = c.lookupSymbol(name);
+		if (address != nullptr) {
+			return *address;
+		} else {
+			std::cerr << std::endl << "ERROR: " << name << " is not defined." << std::endl;
+		}
+		return nullptr;
 	}
 
 	void ClosureDecl::check()
