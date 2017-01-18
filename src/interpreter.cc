@@ -616,19 +616,23 @@ namespace MysoreScript {
 		c.popSymbols();
 		return retVal;
 	}
-
-	Obj StringLiteral::evaluateExpr(Interpreter::Context &c)
-	{
+	
+	Obj constructStringObj(std::string string) {
 		// Construct a string object.
-		String *str = gcAlloc<String>(size());
+		String *str = gcAlloc<String>(string.size());
 		assert(str != nullptr);
 		// Set the class pointer
 		str->isa = &StringClass;
 		// Set the length (as a small integer)
-		str->length = MysoreScript::createSmallInteger(size());
+		str->length = MysoreScript::createSmallInteger(string.size());
 		// Copy the characters into the object
-		copy(str->characters, size(), 0);
+		string.copy(str->characters, string.size(), 0);
 		return reinterpret_cast<Obj>(str);
+	}
+
+	Obj StringLiteral::evaluateExpr(Interpreter::Context &c)
+	{
+		return constructStringObj(*this);
 	}
 	
 	Obj ArrayLiteral::evaluateExpr(Interpreter::Context &c)

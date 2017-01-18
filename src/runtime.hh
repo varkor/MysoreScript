@@ -227,6 +227,10 @@ struct Closure
  */
 extern struct Class StringClass;
 /**
+ * The class used for arrays.
+ */
+extern struct Class ArrayClass;
+/**
  * The class used for small integers.
  */
 extern struct Class SmallIntClass;
@@ -242,6 +246,10 @@ void registerClass(const std::string &name, struct Class *cls);
  * Look up an existing class.
  */
 struct Class* lookupClass(const std::string &name);
+/**
+ * Construct a String object from a string.
+ */
+Obj constructStringObj(std::string string);
 
 
 

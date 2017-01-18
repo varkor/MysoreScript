@@ -157,6 +157,73 @@ Obj StringCharAt(String *str, Selector sel, Obj idx)
 	// value.
 	return createSmallInteger(str->characters[i]);
 }
+
+/**
+ * The `.dump()` method for `String` objects.
+ */
+Obj StringDump(String *str, Selector sel)
+{
+	fwrite(str->characters, getInteger(str->length), 1, stderr);
+	return nullptr;
+}
+/**
+ * The `.print()` method for `String` objects.
+ */
+Obj StringPrint(String *str, Selector sel)
+{
+	fwrite(str->characters, getInteger(str->length), 1, stdout);
+	return nullptr;
+}
+/**
+ * The + method on a string, allocates a new string with the specified length.
+ */
+Obj StringAdd(String *str, Selector sel, String *other)
+{
+	// If we are trying to concatenate something that's not a string, return
+	// null
+	if (other == nullptr || isInteger(reinterpret_cast<Obj>(other)) || other->isa != &StringClass)
+	{
+		return nullptr;
+	}
+	uintptr_t len1 = getInteger(str->length);
+	uintptr_t len2 = getInteger(other->length);
+	uintptr_t lenTotal = len1+len2;
+	String *newStr = gcAlloc<String>(lenTotal);
+	newStr->isa = &StringClass;
+	newStr->length = createSmallInteger(lenTotal);
+	memcpy(newStr->characters, str->characters, len1);
+	memcpy(newStr->characters+len1, other->characters, len2);
+	return reinterpret_cast<Obj>(newStr);
+}
+
+/**
+ * Compare two strings, returning an integer representing the ordering.
+ */
+Obj StringCmp(String *str, Selector sel, String *other)
+{
+	// If we are trying to compare something that's not a string, return null
+	if (other == nullptr || isInteger(reinterpret_cast<Obj>(other)) || other->isa != &StringClass)
+	{
+		return nullptr;
+	}
+	uintptr_t len1 = getInteger(str->length);
+	uintptr_t len2 = getInteger(other->length);
+	uintptr_t len = std::min(len1, len2);
+	int result = memcmp(str->characters, other->characters, len);
+	if (result == 0)
+	{
+		if (len1 > len2)
+		{
+			result = str->characters[len2];
+		}
+		else if (len1 < len2)
+		{
+			result = 0 - other->characters[len1];
+		}
+	}
+	return createSmallInteger(result);
+}
+
 /**
  * The `.length()` method for `Array` objects.
  */
@@ -224,86 +291,73 @@ Obj ArrayAtPut(Array *arr, Selector sel, Obj idx, Obj obj)
 }
 
 /**
+ * The `.toString()` method for `Array` objects.
+ */
+Obj ArrayToString(Array *arr)
+{
+	Selector sel = lookupSelector("toString");
+	assert(sel);
+	intptr_t len = arr->length ? getInteger(arr->length) : 0;
+	bool first = true;
+	std::string str = "[";
+	for (int i = 0; i < len; ++i) {
+		std::string value = "null";
+		if (arr->buffer[i]) {
+			CompiledMethod mth = compiledMethodForSelector(arr->buffer[i], sel);
+			assert(mth);
+			Obj returned = callCompiledMethod(mth, arr->buffer[i], sel, nullptr, 0);
+			if (returned->isa == &StringClass) {
+				value = reinterpret_cast<String *>(returned)->characters;
+			}
+		}
+		str += (!first ? ", " : (first = false, "")) + value;
+	}
+	str += "]";
+	return constructStringObj(str);
+}
+/**
+ * The `.dump()` method for `Array` objects.
+ */
+Obj ArrayDump(Array *arr, Selector sel)
+{
+	StringDump(reinterpret_cast<String *>(ArrayToString(arr)), sel);
+	std::cerr << std::endl;
+	return nullptr;
+}
+/**
+ * The `.print()` method for `Array` objects.
+ */
+Obj ArrayPrint(Array *arr, Selector sel)
+{
+	StringPrint(reinterpret_cast<String *>(ArrayToString(arr)), sel);
+	std::cout << std::endl;
+	return nullptr;
+}
+
+/**
+ * The `.toString()` method for `Number` objects.
+ */
+Obj NumberToString(Obj str)
+{
+	return constructStringObj(std::to_string(getInteger(str)));
+}
+/**
  * The `.dump()` method for `Number` objects.
  */
-Obj NumberDump(Obj str, Selector sel)
+Obj NumberDump(Obj num, Selector sel)
 {
-	std::cerr << getInteger(str) << std::endl;
+	StringDump(reinterpret_cast<String *>(NumberToString(num)), sel);
+	std::cerr << std::endl;
 	return nullptr;
 }
 /**
  * The `.print()` method for `Number` objects.
  */
-Obj NumberPrint(Obj str, Selector sel)
+Obj NumberPrint(Obj num, Selector sel)
 {
-	std::cout << getInteger(str) << std::endl;
+	StringPrint(reinterpret_cast<String *>(NumberToString(num)), sel);
+	std::cout << std::endl;
 	return nullptr;
-}
-
-/**
- * The `.dump()` method for `String` objects.
- */
-Obj StringDump(String *str, Selector sel)
-{
-	fwrite(str->characters, getInteger(str->length), 1, stderr);
-	return nullptr;
-}
-/**
- * The `.dump()` method for `String` objects.
- */
-Obj StringPrint(String *str, Selector sel)
-{
-	fwrite(str->characters, getInteger(str->length), 1, stdout);
-	return nullptr;
-}
-/**
- * The + method on a string, allocates a new string with the specified length.
- */
-Obj StringAdd(String *str, Selector sel, String *other)
-{
-	// If we are trying to concatenate something that's not a string, return
-	// null
-	if (other == nullptr || isInteger(reinterpret_cast<Obj>(other)) || other->isa != &StringClass)
-	{
-		return nullptr;
-	}
-	uintptr_t len1 = getInteger(str->length);
-	uintptr_t len2 = getInteger(other->length);
-	uintptr_t lenTotal = len1+len2;
-	String *newStr = gcAlloc<String>(lenTotal);
-	newStr->isa = &StringClass;
-	newStr->length = createSmallInteger(lenTotal);
-	memcpy(newStr->characters, str->characters, len1);
-	memcpy(newStr->characters+len1, other->characters, len2);
-	return reinterpret_cast<Obj>(newStr);
-}
-
-/**
- * Compare two strings, returning an integer representing the ordering.
- */
-Obj StringCmp(String *str, Selector sel, String *other)
-{
-	// If we are trying to compare something that's not a string, return null
-	if (other == nullptr || isInteger(reinterpret_cast<Obj>(other)) || other->isa != &StringClass)
-	{
-		return nullptr;
-	}
-	uintptr_t len1 = getInteger(str->length);
-	uintptr_t len2 = getInteger(other->length);
-	uintptr_t len = std::min(len1, len2);
-	int result = memcmp(str->characters, other->characters, len);
-	if (result == 0)
-	{
-		if (len1 > len2)
-		{
-			result = str->characters[len2];
-		}
-		else if (len1 < len2)
-		{
-			result = 0 - other->characters[len1];
-		}
-	}
-	return createSmallInteger(result);
 }
 
 /**
@@ -313,6 +367,7 @@ enum StaticSelectors
 {
 	length = 1,
 	charAt,
+	toString,
 	dump,
 	print,
 	invoke,
@@ -337,6 +392,7 @@ const char *StaticSelectorNames[] =
 {
 	"length",
 	"charAt",
+	"toString",
 	"dump",
 	"print",
 	"invoke",
@@ -433,6 +489,12 @@ struct Method StringMethods[] =
 struct Method NumberMethods[] = 
 {
 	{
+		toString,
+		0,
+		reinterpret_cast<CompiledMethod>(NumberToString),
+		nullptr
+	},
+	{
 		dump,
 		0,
 		reinterpret_cast<CompiledMethod>(NumberDump),
@@ -466,6 +528,24 @@ struct Method ArrayMethods[] =
 		atPut,
 		2,
 		reinterpret_cast<CompiledMethod>(ArrayAtPut),
+		nullptr
+	},
+	{
+		toString,
+		0,
+		reinterpret_cast<CompiledMethod>(ArrayToString),
+		nullptr
+	},
+	{
+		dump,
+		0,
+		reinterpret_cast<CompiledMethod>(ArrayDump),
+		nullptr
+	},
+	{
+		print,
+		0,
+		reinterpret_cast<CompiledMethod>(ArrayPrint),
 		nullptr
 	}
 };
