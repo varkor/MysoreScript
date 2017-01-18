@@ -630,6 +630,27 @@ namespace MysoreScript {
 		copy(str->characters, size(), 0);
 		return reinterpret_cast<Obj>(str);
 	}
+	
+	Obj ArrayLiteral::evaluateExpr(Interpreter::Context &c)
+	{
+		// Construct an array object.
+		size_t size = elements.size();
+		Array *arr = gcAlloc<Array>(sizeof(Obj) * ArrayClass.indexedIVarCount);
+		// Initialise the buffer
+		arr->buffer = reinterpret_cast<Obj*>(GC_MALLOC(size * sizeof(Obj)));
+		arr->bufferSize = createSmallInteger(size);
+		assert(arr != nullptr);
+		// Set the class pointer
+		arr->isa = &ArrayClass;
+		// Set the length (as a small integer)
+		arr->length = MysoreScript::createSmallInteger(elements.size());
+		// Copy the elements into the object
+		int i = 0;
+		for (auto &element : elements) {
+			arr->buffer[i++] = element->evaluate(c);
+		}
+		return reinterpret_cast<Obj>(arr);
+	}
 
 	void IfStatement::interpret(Interpreter::Context &c)
 	{

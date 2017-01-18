@@ -190,11 +190,43 @@ namespace MysoreScript {
 			 */
 			bool isConstantExpression() override { return true; }
 			/**
-			 * Evaluate the 
+			 * Evaluate the expression.
 			 */
 			Obj evaluateExpr(Interpreter::Context &c) override;
 			/**
 			 * Compile the string.  Generates a string object and returns a constant
+			 * pointer value that refers to it.
+			 */
+			llvm::Value *compileExpression(Compiler::Context &c) override;
+			/**
+			 * Literals do not define or use any values.
+			 */
+			void collectVarUses(std::unordered_set<std::string> &decls,
+								std::unordered_set<std::string> &uses) override
+			{
+				return;
+			}
+		};
+		/**
+		 * An array literal.  MysoreScript arrays are instances of the Array
+		 * class.
+		 */
+		struct ArrayLiteral : public Expression
+		{
+			/**
+			 * The list of expressions that represent the elements of the array.
+			 */
+			ASTList<Expression> elements;
+			/**
+			 * Literals are constant expressions.
+			 */
+			bool isConstantExpression() override { return true; }
+			/**
+			 * Evaluate the expression.
+			 */
+			Obj evaluateExpr(Interpreter::Context &c) override;
+			/**
+			 * Compile the array.  Generates an array object and returns a constant
 			 * pointer value that refers to it.
 			 */
 			llvm::Value *compileExpression(Compiler::Context &c) override;

@@ -112,7 +112,7 @@ namespace MysoreScript {
 		 */
 		Rule string_body      = *character;
 		/**
-		 * Strings any characters, enclosed in quotes.
+		 * Strings are any collection of characters, enclosed in quotes.
 		 */
 		Rule string  = term('"' >> string_body >> '"');
 		/**
@@ -174,7 +174,15 @@ namespace MysoreScript {
 		 * we can trivially disambiguate these cases.
 		 */
 		Rule expression   = call | closure | newExpr | arith_expr | variable |
-							string;
+							string | array;
+		/**
+		 * Elements can be any expression.
+		 */
+		Rule element = expression;
+		/**
+		 * Arrays are ordered lists of comma-separated elements, enclosed in square brackets.
+		 */
+		Rule array = '[' >> -(element >> *(',' >> element)) >> ']';
 		/**
 		 * A `new` expression: the keyword new followed by a class name.
 		 */

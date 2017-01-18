@@ -592,6 +592,18 @@ Value *StringLiteral::compileExpression(Compiler::Context &c)
 	// Return a constant pointer to the cached value.
 	return staticAddress(c, static_cast<Obj>(cache), c.ObjPtrTy);
 }
+Value *ArrayLiteral::compileExpression(Compiler::Context &c)
+{
+	// If we don't have a cached array object for this literal, then poke the
+	// interpreter to generate one.
+	if (!static_cast<Obj>(cache))
+	{
+		Interpreter::Context ic;
+		cache = evaluateExpr(ic);
+	}
+	// Return a constant pointer to the cached value.
+	return staticAddress(c, static_cast<Obj>(cache), c.ObjPtrTy);
+}
 Value *Number::compileExpression(Compiler::Context &c)
 {
 	// Construct a constant small integer value

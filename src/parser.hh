@@ -23,6 +23,7 @@ namespace MysoreScript {
 			CONNECT(CmpLE, le_cmp);
 			CONNECT(CmpGE, ge_cmp);
 			CONNECT(StringLiteral, string_body);
+			CONNECT(ArrayLiteral, array);
 			CONNECT(Identifier, identifier);
 			CONNECT(ArgList, callArgList);
 			CONNECT(ParamList, argList);
