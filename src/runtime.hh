@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <assert.h>
+#include <list>
 #include <string>
 #include "gc.h"
 
@@ -250,6 +251,10 @@ struct Class* lookupClass(const std::string &name);
  * Construct a String object from a string.
  */
 Obj constructStringObj(std::string string);
+/**
+ * Construct an Array object from a list of elements.
+ */
+Obj constructArrayObj(std::list<Obj> elements);
 
 
 

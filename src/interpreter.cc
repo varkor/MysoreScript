@@ -642,8 +642,7 @@ namespace MysoreScript {
 		return constructStringObj(*this);
 	}
 	
-	Obj ArrayLiteral::evaluateExpr(Interpreter::Context &c)
-	{
+	Obj constructArrayObj(std::list<Obj> elements) {
 		// Construct an array object.
 		size_t size = elements.size();
 		Array *arr = gcAlloc<Array>(sizeof(Obj) * ArrayClass.indexedIVarCount);
@@ -658,9 +657,18 @@ namespace MysoreScript {
 		// Copy the elements into the object
 		int i = 0;
 		for (auto &element : elements) {
-			arr->buffer[i++] = element->evaluate(c);
+			arr->buffer[i++] = element;
 		}
 		return reinterpret_cast<Obj>(arr);
+	}
+	
+	Obj ArrayLiteral::evaluateExpr(Interpreter::Context &c)
+	{
+		std::list<Obj> elements;
+		for (auto& element : this->elements) {
+			elements.push_back(element->evaluate(c));
+		}
+		return constructArrayObj(elements);
 	}
 
 	void IfStatement::interpret(Interpreter::Context &c)

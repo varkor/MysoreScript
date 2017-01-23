@@ -303,11 +303,15 @@ Obj ArrayToString(Array *arr)
 	for (int i = 0; i < len; ++i) {
 		std::string value = "null";
 		if (arr->buffer[i]) {
-			CompiledMethod mth = compiledMethodForSelector(arr->buffer[i], sel);
-			assert(mth);
-			Obj returned = callCompiledMethod(mth, arr->buffer[i], sel, nullptr, 0);
-			if (returned->isa == &StringClass) {
-				value = reinterpret_cast<String *>(returned)->characters;
+			if (!isInteger(arr->buffer[i]) && arr->buffer[i]->isa == &StringClass) {
+				value = "\"" + std::string(reinterpret_cast<String *>(arr->buffer[i])->characters) + "\"";
+			} else {
+				CompiledMethod mth = compiledMethodForSelector(arr->buffer[i], sel);
+				assert(mth);
+				Obj returned = callCompiledMethod(mth, arr->buffer[i], sel, nullptr, 0);
+				if (returned->isa == &StringClass) {
+					value = reinterpret_cast<String *>(returned)->characters;
+				}
 			}
 		}
 		str += (!first ? ", " : (first = false, "")) + value;
