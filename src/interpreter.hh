@@ -159,4 +159,6 @@ namespace MysoreScript {
 		 */
 		extern MysoreScript::ClosureInvoke closureTrampolines[];
 	};
+	
+	extern Interpreter::Context *currentContext;
 }

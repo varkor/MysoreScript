@@ -8,6 +8,8 @@ namespace MysoreScript {
 	using Interpreter::forceCompiler;
 	
 	using namespace AST;
+	
+	Interpreter::Context *currentContext;
 
 	namespace {
 	/**
@@ -19,8 +21,6 @@ namespace MysoreScript {
 	{
 		return (o != nullptr) && ((reinterpret_cast<intptr_t>(o) & 7) == 0);
 	}
-
-	Interpreter::Context *currentContext;
 
 	/**
 	 * 0-argument trampoline for jumping back into the interpreter when a closure
