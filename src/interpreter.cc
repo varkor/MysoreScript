@@ -677,6 +677,13 @@ namespace MysoreScript {
 		{
 			body->interpret(c);
 		}
+		else if (elseStatement != nullptr) {
+			elseStatement->interpret(c);
+		}
+	}
+	void ElseStatement::interpret(Interpreter::Context &c)
+	{
+		body->interpret(c);
 	}
 	void WhileLoop::interpret(Interpreter::Context &c)
 	{

@@ -34,6 +34,7 @@ namespace MysoreScript {
 			CONNECT(Decl, decl);
 			CONNECT(Return, ret);
 			CONNECT(IfStatement, ifStatement);
+			CONNECT(ElseStatement, elseStatement);
 			CONNECT(WhileLoop, whileLoop);
 			CONNECT(Statements, statements);
 			CONNECT(ClassDecl, cls);
