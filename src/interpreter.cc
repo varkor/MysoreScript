@@ -456,7 +456,7 @@ namespace MysoreScript {
 		if (address != nullptr) {
 			return *address;
 		} else {
-			std::cerr << std::endl << "ERROR: " << name << " is not defined." << std::endl;
+			std::cerr << "ERROR: " << name << " is not defined." << std::endl;
 		}
 		return nullptr;
 	}
@@ -738,7 +738,7 @@ namespace MysoreScript {
 	{
 		// Evaluate the returned expression and then indicate in the interpreter
 		// context that we're returning.
-		c.retVal = expr->evaluate(c);
+		c.retVal = expr != nullptr ? expr->evaluate(c) : nullptr;
 		c.isReturning = true;
 	}
 

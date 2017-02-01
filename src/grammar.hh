@@ -194,7 +194,7 @@ namespace MysoreScript {
 		/**
 		 * A return statement.
 		 */
-		Rule ret          = "return"_E >> expression >> ';';
+		Rule ret          = "return"_E >> -expression >> ';';
 		/**
 		 * An else statement, that optionally follows an if statement.
 		 */

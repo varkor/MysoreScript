@@ -27,12 +27,12 @@ Obj invalidMethod(Obj obj, Selector sel)
 	auto selName = selNames[sel];
 	if (!obj)
 	{
-		std::cerr << std::endl << "ERROR: method " << selName
+		std::cerr << "ERROR: method " << selName
 		          << " called on null object." << std::endl;
 		return nullptr;
 	}
 	Class *cls = isInteger(obj) ? &SmallIntClass : obj->isa;
-	std::cerr << std::endl << "ERROR: " << cls->className
+	std::cerr << "ERROR: " << cls->className
 	          << " does not respond to selector " << selName << '.' << std::endl;
 	return nullptr;
 }
