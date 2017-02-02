@@ -241,6 +241,33 @@ namespace MysoreScript {
 			}
 		};
 		/**
+		 * The null literal, representing the null object value.
+		 */
+		struct NullLiteral : public Expression
+		{
+			/**
+			 * There is only one null value, so it is trivially constant.
+			 */
+			bool isConstantExpression() override { return true; }
+			/**
+			 * Evaluate the expression.
+			 */
+			Obj evaluateExpr(Interpreter::Context &c) override;
+			/**
+			 * Compile the array.  Generates an array object and returns a constant
+			 * pointer value that refers to it.
+			 */
+			llvm::Value *compileExpression(Compiler::Context &c) override;
+			/**
+			 * Literals do not define or use any values.
+			 */
+			void collectVarUses(std::unordered_set<std::string> &decls,
+								std::unordered_set<std::string> &uses) override
+			{
+				return;
+			}
+		};
+		/**
 		 * Abstract superclass for binary operators.
 		 */
 		struct BinOpBase : public Expression

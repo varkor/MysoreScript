@@ -127,7 +127,7 @@ namespace MysoreScript {
 		 * A list of reserved keywords to prevent any of them being used as
 		 * identifiers and make attempting such a syntax error.
 		 */
-		Rule reserved = "func"_E | "new" | "var" | "return" | "else" | "if" | "while" | "class"; 
+		Rule reserved = "func"_E | "null" | "new" | "var" | "return" | "else" | "if" | "while" | "class"; 
 		/**
 		 * Identifiers are a letter followed by zero or more alphanumeric
 		 * characters.
@@ -190,7 +190,7 @@ namespace MysoreScript {
 		 * we can trivially disambiguate these cases.
 		 */
 		Rule expression   = call | closure | newExpr | arith_expr | variable |
-							string | array;
+							string | array | null;
 		/**
 		 * Elements can be any expression.
 		 */
@@ -200,6 +200,13 @@ namespace MysoreScript {
 		 * brackets.
 		 */
 		Rule array = '[' >> -(element >> *(',' >> element)) >> ']';
+		/**
+		 * The null value is the value of a variable before it has been defined.
+		 * With no distinction between undefined variables, and null values,
+		 * having a literal to represent it makes the behaviour of such values
+		 * more intuitive.
+		 */
+		Rule null = "null"_E;
 		/**
 		 * A `new` expression: the keyword new followed by a class name.
 		 */

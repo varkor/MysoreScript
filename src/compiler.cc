@@ -626,6 +626,10 @@ Value *ArrayLiteral::compileExpression(Compiler::Context &c)
 	// Return a constant pointer to the cached value.
 	return staticAddress(c, static_cast<Obj>(cache), c.ObjPtrTy);
 }
+Value *NullLiteral::compileExpression(Compiler::Context &c)
+{
+	return ConstantPointerNull::get(c.ObjPtrTy);
+}
 Value *Number::compileExpression(Compiler::Context &c)
 {
 	// Construct a constant small integer value

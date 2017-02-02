@@ -670,6 +670,11 @@ namespace MysoreScript {
 		}
 		return constructArrayObj(elements);
 	}
+	
+	Obj NullLiteral::evaluateExpr(Interpreter::Context &c)
+	{
+		return nullptr;
+	}
 
 	void IfStatement::interpret(Interpreter::Context &c)
 	{
