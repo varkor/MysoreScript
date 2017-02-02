@@ -99,9 +99,13 @@ namespace MysoreScript {
 		 */
 		Rule cmp    = eq_cmp | ne_cmp | lt_cmp | gt_cmp | le_cmp | ge_cmp;
 		/**
+		 * Arithmetic expressions can be any of the numeric operations.
+		 */
+		Rule arith = add_op | sub_op | mul | cmp;
+		/**
 		 * Expressions can be any of the other types.
 		 */
-		Rule arith_expr   = add_op | sub_op | mul | cmp | expression;
+		Rule arith_expr = arith | expression;
 		/**
 		 * A character in a string.  Matches anything except the closing quote.
 		 */
@@ -156,13 +160,21 @@ namespace MysoreScript {
 		 * then this is a method invocation, otherwise the expression on the left is
 		 * assumed to be a closure and is invoked directly.
 		 */
-		Rule call         = callable >> -('.'_E >> identifier) >> callArgList;
+		Rule call         = (instance >> '.'_E >> identifier >> callArgList) | (callable >> callArgList);
 		/**
-		 * Callable expression.  This is the same as an expression, but with the
-		 * call at the end so that each of the other possibilities will be tried
-		 * before hitting left recursion.
+		 * Callable expression.  
 		 */
-		Rule callable     = closure | newExpr | arith_expr | variable | call;
+		Rule callable     = closure | newExpr | arith | variable | call;
+		/**
+		 * An instance is an expression that can have methods called on it. This
+		 * allows for a distinction between expressions that can be called, such
+		 * as closures, and expressions that can have methods called on them,
+		 * such as string or array literals. This is the same as an expression, but
+		 * with the call at the end so that each of the other possibilities will be
+		 * tried before hitting left recursion.
+		 */
+		Rule instance     = closure | newExpr | arith_expr | variable | string | array
+						    | call;
 		/**
 		 * All of the valid kinds of expression.  Note that the order places calls
 		 * first, as greedy matching will try cause them to then be matched in the
