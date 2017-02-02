@@ -453,9 +453,12 @@ namespace MysoreScript {
 		// Get the address of the variable corresponding to this symbol and then
 		// load the object stored there.
 		Obj *address = c.lookupSymbol(name);
-		if (address != nullptr) {
+		if (address != nullptr)
+		{
 			return *address;
-		} else {
+		}
+		else
+		{
 			std::cerr << "ERROR: " << name << " is not defined." << std::endl;
 		}
 		return nullptr;

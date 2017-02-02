@@ -232,12 +232,14 @@ namespace MysoreScript {
 			 */
 			llvm::Value *compileExpression(Compiler::Context &c) override;
 			/**
-			 * Literals do not define or use any values.
+			 * Each of the elements in an array literal may reference variables.
 			 */
 			void collectVarUses(std::unordered_set<std::string> &decls,
 								std::unordered_set<std::string> &uses) override
 			{
-				return;
+				for (auto& element : elements) {
+					element->collectVarUses(decls, uses);
+				}
 			}
 		};
 		/**
