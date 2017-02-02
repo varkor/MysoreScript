@@ -218,9 +218,10 @@ namespace MysoreScript {
 			 */
 			ASTList<Expression> elements;
 			/**
-			 * Literals are constant expressions.
+			 * Array literals can have elements referenced as variables, so it is important that the value
+			 * of the array isn't cached, as this can lead to incorrectly populated arrays.
 			 */
-			bool isConstantExpression() override { return true; }
+			bool isConstantExpression() override { return false; }
 			/**
 			 * Evaluate the expression.
 			 */

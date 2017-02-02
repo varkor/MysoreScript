@@ -85,8 +85,7 @@ int main(int argc, char **argv)
 	int c;
 	pegmatite::ErrorReporter err =
 		[](const pegmatite::InputRange &r, std::string s) {
-			std::cerr << "Syntax error: \n line " << r.start.line
-			          << ", column " << r.start.col << std::endl;
+			std::cerr << "Syntax error at Line " << r.start.line << ", Column " << r.start.col << ": " << r.str() << std::endl;
 	};
 	// Parse the options that we understand
 	while ((c = getopt(argc, argv, "chmitf:")) != -1)
