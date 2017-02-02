@@ -169,7 +169,7 @@ namespace MysoreScript {
 		/**
 		 * Callable expression.  
 		 */
-		Rule callable     = closure | newExpr | arith | variable | call;
+		Rule callable     = closure | newExpr | arith | variable | ('(' >> expression >> ')') | call;
 		/**
 		 * An instance is an expression that can have methods called on it. This
 		 * allows for a distinction between expressions that can be called, such
