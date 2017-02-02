@@ -435,9 +435,17 @@ namespace MysoreScript {
 		// If there's no method, then we're trying to invoke a closure.
 		if (!method)
 		{
-			assert(obj->isa == &ClosureClass);
-			Closure *closure = reinterpret_cast<Closure*>(obj);
-			return callCompiledClosure(closure->invoke, closure, args, i);
+			if (obj != nullptr)
+			{
+				assert(obj->isa == &ClosureClass);
+				Closure *closure = reinterpret_cast<Closure*>(obj);
+				return callCompiledClosure(closure->invoke, closure, args, i);
+			}
+			else
+			{
+				std::cerr << "ERROR: cannot call null closure." << std::endl;
+				return nullptr;
+			}
 		}
 		// Look up the selector and method to call
 		Selector sel = lookupSelector(*method.get());
