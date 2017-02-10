@@ -4,8 +4,9 @@
 
 namespace MysoreScript {
 	
-	bool Interpreter::forceCompiler = false;
-	using Interpreter::forceCompiler;
+	Interpreter::ExecutionMethod Interpreter::executionMethod = Interpreter::ExecutionMethod::justInTime;
+	using Interpreter::ExecutionMethod;
+	using Interpreter::executionMethod;
 	
 	using namespace AST;
 	
@@ -543,7 +544,7 @@ namespace MysoreScript {
 		Class *cls = isInteger(self) ? &SmallIntClass : self->isa;
 		executionCount++;
 		// If we've interpreted this method enough times then try to compile it.
-		if (forceCompiler || (executionCount == compileThreshold))
+		if (executionMethod != ExecutionMethod::forceInterpreter && (executionMethod == ExecutionMethod::forceCompiler || executionCount == compileThreshold))
 		{
 			mth->function = compileMethod(cls, c.globalSymbols);
 			compiledClosure = reinterpret_cast<ClosureInvoke>(mth->function);
@@ -591,7 +592,7 @@ namespace MysoreScript {
 	{
 		executionCount++;
 		// If we've interpreted this enough times, compile it.
-		if (forceCompiler || (executionCount == compileThreshold))
+		if (executionMethod != ExecutionMethod::forceInterpreter && (executionMethod == ExecutionMethod::forceCompiler || executionCount == compileThreshold))
 		{
 			// Note that we don't pass any symbols other than the globals into the
 			// compiler, because all of the bound variables are already copied into

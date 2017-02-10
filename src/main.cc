@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 				usage(argv[0]);
 				break;
 			case 'c':
-				Interpreter::forceCompiler = true;
+				Interpreter::executionMethod = Interpreter::ExecutionMethod::forceCompiler;
 				break;
 		}
 	}

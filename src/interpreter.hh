@@ -13,7 +13,8 @@ namespace MysoreScript {
 		 * ensures that all methods and closures are compiled the first time that
 		 * they are invoked.
 		 */
-		extern bool forceCompiler;
+		enum class ExecutionMethod { justInTime, forceCompiler, forceInterpreter };
+		extern ExecutionMethod executionMethod;
 		using MysoreScript::Obj;
 		/**
 		 * Value wraps an object pointer.  It is responsible for informing the

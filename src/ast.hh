@@ -221,7 +221,17 @@ namespace MysoreScript {
 			 * Array literals can have elements referenced as variables, so it is important that the value
 			 * of the array isn't cached, as this can lead to incorrectly populated arrays.
 			 */
-			bool isConstantExpression() override { return false; }
+			bool isConstantExpression() override
+			{
+				for (auto& element : elements)
+				{
+					if (!element->isConstantExpression())
+					{
+						return false;
+					}
+				}
+				return true;
+			}
 			/**
 			 * Evaluate the expression.
 			 */
@@ -237,7 +247,8 @@ namespace MysoreScript {
 			void collectVarUses(std::unordered_set<std::string> &decls,
 								std::unordered_set<std::string> &uses) override
 			{
-				for (auto& element : elements) {
+				for (auto& element : elements)
+				{
 					element->collectVarUses(decls, uses);
 				}
 			}
