@@ -572,6 +572,14 @@ namespace MysoreScript {
 		{
 			c.setSymbol(*param.get(), &args[i++]);
 		}
+		i = 0;
+		Obj* locals = new Obj[decls.size()];
+		for (auto &decl : decls)
+		{
+			// Ensure local variables have allocated storage, so that they're not
+			// treated as global variables.
+			c.setSymbol(decl, &locals[i++]);
+		}
 		Obj cmdObj = createSmallInteger(sel);
 		// Add self and cmd (receiver and selector) to the symbol table
 		c.setSymbol("self", &self);
@@ -592,6 +600,7 @@ namespace MysoreScript {
 		c.isReturning = false;
 		// Pop the symbols off the symbol table (very important, as they reference
 		// our stack frame!)
+		delete[] locals;
 		c.popSymbols();
 		return retVal;
 	}
@@ -630,6 +639,14 @@ namespace MysoreScript {
 			// Bound variables are stored within the closure object
 			c.setSymbol(bound, &self->boundVars[i++]);
 		}
+		i = 0;
+		Obj* locals = new Obj[decls.size()];
+		for (auto &decl : decls)
+		{
+			// Ensure local variables have allocated storage, so that they're not
+			// treated as global variables.
+			c.setSymbol(decl, &locals[i++]);
+		}
 		// Interpret the body
 		body->interpret(c);
 		// Return the return value.  Make sure it's set back to nullptr after we've
@@ -640,6 +657,7 @@ namespace MysoreScript {
 		c.isReturning = false;
 		// Pop the symbols off the symbol table (very important, as they reference
 		// our stack frame!)
+		delete[] locals;
 		c.popSymbols();
 		return retVal;
 	}
