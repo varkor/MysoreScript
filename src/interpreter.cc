@@ -532,7 +532,15 @@ namespace MysoreScript {
 		// Copy bound variables into the closure.
 		for (auto &var : boundVars)
 		{
-			C->boundVars[i++] = *c.lookupSymbol(var);
+			Obj *address = c.lookupSymbol(var);
+			if (address != nullptr)
+			{
+				C->boundVars[i++] = *address;
+			}
+			else
+			{
+				std::cerr << "ERROR: " << var << " is not defined." << std::endl;
+			}
 		}
 		return reinterpret_cast<Obj>(C);
 	}
