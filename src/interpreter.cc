@@ -418,9 +418,10 @@ namespace MysoreScript {
 	{
 		// Array of arguments.  
 		Obj args[10];
+		return args[0];
 		// Get the callee, which is either a closure or some other object that will
 		// have a method on it invoked.
-		Obj obj = callee->evaluate(c);
+		/*Obj obj = callee->evaluate(c);
 		assert(obj);
 		auto &argsAST = arguments->arguments;
 		size_t i=0;
@@ -453,7 +454,7 @@ namespace MysoreScript {
 		CompiledMethod mth = compiledMethodForSelector(obj, sel);
 		assert(mth);
 		// Call the method.
-		return callCompiledMethod(mth, obj, sel, args, arguments->arguments.size());
+		return callCompiledMethod(mth, obj, sel, args, arguments->arguments.size());*/
 	}
 
 	Obj VarRef::evaluateExpr(Interpreter::Context &c)

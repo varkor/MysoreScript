@@ -32,6 +32,7 @@ namespace MysoreScript {
 			CONNECT(VarRef, variable);
 			CONNECT(Assignment, assignment);
 			CONNECT(Call, call);
+			CONNECT(Application, application);
 			CONNECT(Decl, decl);
 			CONNECT(Return, ret);
 			CONNECT(IfStatement, ifStatement);

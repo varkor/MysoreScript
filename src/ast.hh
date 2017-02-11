@@ -708,6 +708,17 @@ namespace MysoreScript {
 			 */
 			ASTList<Expression> arguments;
 		};
+		struct Application : public pegmatite::ASTContainer {
+			/**
+			 * The name of the method, if this is a method invocation.
+			 */
+			ASTPtr<Identifier, /*optional*/true> method;
+			/**
+			 * The arguments to this call.
+			 */
+			ASTPtr<ArgList> arguments;
+			ASTPtr<Application, /*optional*/true> appl;
+		};
 		/**
 		 * A call expression.  This either invokes a closure or a method.
 		 */
@@ -718,14 +729,8 @@ namespace MysoreScript {
 			 * having a method invoked on it if it is a method invocation.
 			 */
 			ASTPtr<Expression> callee;
-			/**
-			 * The name of the method, if this is a method invocation.
-			 */
-			ASTPtr<Identifier, /*optional*/true> method;
-			/**
-			 * The arguments to this call.
-			 */
-			ASTPtr<ArgList> arguments;
+			
+			ASTPtr<Application> applications;
 			protected:
 			/**
 			 * Call the relevant method or closure.
@@ -742,12 +747,16 @@ namespace MysoreScript {
 								std::unordered_set<std::string> &uses) override
 			{
 				callee->collectVarUses(decls, uses);
-				for (auto &arg : arguments->arguments)
-				{
-					arg->collectVarUses(decls, uses);
-				}
+//				for (auto &appl : applications)
+//				{
+//					for (auto &arg : appl->arguments->arguments)
+//					{
+//						arg->collectVarUses(decls, uses);
+//					}
+//				}
 			}
 		};
+		
 		/**
 		 * A variable declaration.
 		 */

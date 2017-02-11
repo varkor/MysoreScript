@@ -165,21 +165,16 @@ namespace MysoreScript {
 		 * then this is a method invocation, otherwise the expression on the left is
 		 * assumed to be a closure and is invoked directly.
 		 */
-		Rule call         = (instance >> '.'_E >> identifier >> callArgList) | (callable >> callArgList);
+		Rule call         = methodCall | functionCall;
+		Rule application  = methodApplication | functionApplication;
 		/**
 		 * Callable expression.  
 		 */
-		Rule callable     = closure | newExpr | arith | variable | ('(' >> expression >> ')') | call;
-		/**
-		 * An instance is an expression that can have methods called on it. This
-		 * allows for a distinction between expressions that can be called, such
-		 * as closures, and expressions that can have methods called on them,
-		 * such as string or array literals. This is the same as an expression, but
-		 * with the call at the end so that each of the other possibilities will be
-		 * tried before hitting left recursion.
-		 */
-		Rule instance     = closure | newExpr | arith_expr | variable | string | array
-						    | call;
+		Rule functionApplication = callArgList >> -application;
+		Rule functionCall     = (closure | newExpr | val | variable) >> functionApplication;
+		
+		Rule methodApplication = '.'_E >> identifier >> callArgList >> -application;
+		Rule methodCall = (closure | newExpr | val | variable | string | array) >> methodApplication;
 		/**
 		 * All of the valid kinds of expression.  Note that the order places calls
 		 * first, as greedy matching will try cause them to then be matched in the

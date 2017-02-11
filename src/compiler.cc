@@ -443,7 +443,7 @@ Value *Call::compileExpression(Compiler::Context &c)
 	// first argument
 	args.push_back(obj);
 	// If this is a method invocation, then the next argument is the selector.
-	if (method)
+	/*if (method)
 	{
 		Selector sel = lookupSelector(*method.get());
 		args.push_back(ConstantInt::get(c.SelTy, sel));
@@ -453,9 +453,9 @@ Value *Call::compileExpression(Compiler::Context &c)
 	for (auto &arg : argsAST)
 	{
 		args.push_back(getAsObject(c, arg->compileExpression(c)));
-	}
+	}*/
 	// If there's no method, then we're trying to invoke a closure.
-	if (!method)
+	/*if (!method)
 	{
 		// Get the closure invoke type. 
 		FunctionType *invokeFnTy = c.getClosureType(0, args.size() - 1);
@@ -475,7 +475,7 @@ Value *Call::compileExpression(Compiler::Context &c)
 		invokeFn = c.B.CreateLoad(invokeFn);
 		// Insert the call
 		return c.B.CreateCall(invokeFn, args, "call_closure");
-	}
+	}*/
 	// If we are invoking a method, then we must first look up the method, then
 	// call it.
 	FunctionType *methodType = c.getMethodType(0, args.size() - 2);

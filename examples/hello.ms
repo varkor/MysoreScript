@@ -1,2 +1,1 @@
-"hello world!\n".print();
-
+x.a().a().a().a().a();
