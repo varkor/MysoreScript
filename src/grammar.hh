@@ -101,7 +101,7 @@ namespace MysoreScript {
 		/**
 		 * Arithmetic expressions can be any of the numeric operations.
 		 */
-		Rule arith = add_op | sub_op | mul | cmp;
+		Rule arith = add_op | sub_op | cmp | mul;
 		/**
 		 * Expressions can be any of the other types.
 		 */
