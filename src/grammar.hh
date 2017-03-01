@@ -259,9 +259,9 @@ namespace MysoreScript {
 			static MysoreScriptGrammar g;
 			return g;
 		}
-		private:
+		protected:
 		/**
-		 * Private constructor.  This class is immutable, and so only the `get()`
+		 * Protected constructor.  This class is immutable, and so only the `get()`
 		 * method should be used to return the singleton instance.
 		 */
 		MysoreScriptGrammar() {};
