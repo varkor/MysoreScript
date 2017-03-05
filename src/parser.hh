@@ -45,7 +45,7 @@ namespace MysoreScript {
 			/**
 			 * The grammar that this parser uses.
 			 */
-			const MysoreScriptGrammar &g = MysoreScriptGrammar::get();
+			MysoreScriptGrammar &g = MysoreScriptGrammar::get();
 		};
 	}
 }
