@@ -46,7 +46,7 @@ namespace MysoreScript {
 			/**
 			 * Values are either numbers or expressions in brackets (highest precedence).
 			 */
-			Rule val    = num |  '(' >> arith_expr >> ')';
+			Rule val    = num | variable | '(' >> arith_expr >> ')';
 			/**
 			 * Multiply operations are values or multiply, or divide operations,
 			 * followed by a multiply symbol, followed by a value.  The sides can never
