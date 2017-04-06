@@ -129,6 +129,8 @@ int main(int argc, char **argv)
 	{
 		// Open the file
 		pegmatite::AsciiFileInput input(open(file, O_RDONLY));
+		std::string path(file);
+		workingDirectory = path.substr(0, path.find_last_of("/\\") + 1);
 		c1 = clock();
 		// Parse one or more statements, report errors if there are any
 		if (!p.parse(input, p.g.statements, p.g.ignored, err, ast))

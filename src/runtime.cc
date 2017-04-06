@@ -9,6 +9,8 @@
 
 using namespace MysoreScript;
 
+std::string MysoreScript::workingDirectory;
+
 namespace
 {
 
@@ -64,7 +66,13 @@ File *FileOpen(File *f, Selector sel, String *file)
 		return nullptr;
 	}
 	std::string filename(file->characters, getInteger(file->length));
-	f->fd = open(filename.c_str(), O_RDWR | O_CREAT, 0600);
+	std::string path;
+	if (filename.find_first_of("/\\") == 0) {
+		path = filename;
+	} else {
+		path = workingDirectory + filename;
+	}
+	f->fd = open(path.c_str(), O_RDWR | O_CREAT, 0600);
 	return f;
 }
 /**

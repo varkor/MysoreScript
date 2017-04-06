@@ -33,6 +33,8 @@ namespace AST
 
 struct Object;
 struct Closure;
+	
+extern std::string workingDirectory;
 
 /**
  * Object pointer.  Objects are either pointers or small objects hidden inside
