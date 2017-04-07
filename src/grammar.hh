@@ -46,7 +46,12 @@ namespace MysoreScript {
 			/**
 			 * Values are either numbers or expressions in brackets (highest precedence).
 			 */
-			Rule val    = num | variable | '(' >> arith_expr >> ')';
+			Rule val    = num | '(' >> arith_expr >> ')';
+			/**
+			 * Value-esques are expressions that have higher precedence than any operation.
+			 */
+			Rule val_esque = val | call | newExpr | variable |
+			string | array | null;
 			/**
 			 * Multiply operations are values or multiply, or divide operations,
 			 * followed by a multiply symbol, followed by a value.  The sides can never
@@ -54,16 +59,16 @@ namespace MysoreScript {
 			 * can only be parents of multiply or divide operations (or children via
 			 * parenthetical expressions), not direct children.
 			 */
-			Rule mul_op = mul >> '*' >> val;
+			Rule mul_op = mul >> '*' >> val_esque;
 			/**
 			 * Divide operations follow the same syntax as multiply.
 			 */
-			Rule div_op = mul >> '/' >> val;
+			Rule div_op = mul >> '/' >> val_esque;
 			/**
 			 * Multiply-precedence operations are either multiply or divide operations,
 			 * or simple values (numbers of parenthetical expressions).
 			 */
-			Rule mul    = mul_op | div_op | val;
+			Rule mul    = mul_op | div_op | val_esque;
 			/**
 			 * Add operations can have any expression on the left (including other add
 			 * expressions), but only higher-precedence operations on the right.
