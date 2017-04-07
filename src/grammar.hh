@@ -186,8 +186,7 @@ namespace MysoreScript {
 			 * with the call at the end so that each of the other possibilities will be
 			 * tried before hitting left recursion.
 			 */
-			Rule instance     = closure | newExpr | arith_expr | variable | string | array
-								| call;
+			Rule instance     = closure | newExpr | arith_expr | variable | string | array | ('(' >> call >> ')');
 			/**
 			 * All of the valid kinds of expression.  Note that the order places calls
 			 * first, as greedy matching will try cause them to then be matched in the
