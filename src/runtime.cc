@@ -303,6 +303,14 @@ Obj ArrayAtPut(Array *arr, Selector sel, Obj idx, Obj obj)
  */
 Obj ArrayToString(Array *arr)
 {
+	// Prevent attempting to print arrays of infinite depth by terminating any circular references.
+	static std::pair<std::unordered_map<Obj, uint64_t>, uint64_t> circularReferences;
+	Obj self = reinterpret_cast<Obj>(arr);
+	if (circularReferences.first.find(self) != circularReferences.first.end()) {
+		return constructStringObj("⟲" + std::to_string(circularReferences.first[self]));
+	}
+	circularReferences.first[self] = circularReferences.second++;
+	
 	Selector sel = lookupSelector("toString");
 	assert(sel);
 	intptr_t len = arr->length ? getInteger(arr->length) : 0;
@@ -319,18 +327,26 @@ Obj ArrayToString(Array *arr)
 			}
 			else
 			{
-				CompiledMethod mth = compiledMethodForSelector(arr->buffer[i], sel);
-				assert(mth);
-				Obj returned = callCompiledMethod(mth, arr->buffer[i], sel, nullptr, 0);
-				if (returned->isa == &StringClass)
+				if (arr->buffer[i] == reinterpret_cast<Obj>(arr))
 				{
-					value = reinterpret_cast<String *>(returned)->characters;
+					value = "⟲";
+				}
+				else
+				{
+					CompiledMethod mth = compiledMethodForSelector(arr->buffer[i], sel);
+					assert(mth);
+					Obj returned = callCompiledMethod(mth, arr->buffer[i], sel, nullptr, 0);
+					if (returned->isa == &StringClass)
+					{
+						value = reinterpret_cast<String *>(returned)->characters;
+					}
 				}
 			}
 		}
 		str += (!first ? ", " : (first = false, "")) + value;
 	}
 	str += "]";
+	circularReferences.first.erase(self);
 	return constructStringObj(str);
 }
 /**
