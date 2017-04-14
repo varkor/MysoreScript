@@ -50,8 +50,7 @@ namespace MysoreScript {
 			/**
 			 * Value-esques are expressions that have higher precedence than any operation.
 			 */
-			Rule val_esque = val | call | newExpr | variable |
-			string | array | null;
+			Rule val_esque = val | call | newExpr | variable | string | array | null;
 			/**
 			 * Multiply operations are values or multiply, or divide operations,
 			 * followed by a multiply symbol, followed by a value.  The sides can never
@@ -59,11 +58,11 @@ namespace MysoreScript {
 			 * can only be parents of multiply or divide operations (or children via
 			 * parenthetical expressions), not direct children.
 			 */
-			Rule mul_op = mul >> '*' >> val_esque;
+			Rule mul_op = mul >> '*' >> mul;
 			/**
 			 * Divide operations follow the same syntax as multiply.
 			 */
-			Rule div_op = mul >> '/' >> val_esque;
+			Rule div_op = mul >> '/' >> mul;
 			/**
 			 * Multiply-precedence operations are either multiply or divide operations,
 			 * or simple values (numbers of parenthetical expressions).
@@ -73,11 +72,11 @@ namespace MysoreScript {
 			 * Add operations can have any expression on the left (including other add
 			 * expressions), but only higher-precedence operations on the right.
 			 */
-			Rule add_op = arith_expr >> '+' >> arith_expr;
+			Rule add_op = arith >> '+' >> arith;
 			/**
 			 * Subtract operations follow the same structure as add.
 			 */
-			Rule sub_op = arith_expr >> '-' >> arith_expr;
+			Rule sub_op = arith >> '-' >> arith;
 			/**
 			 * Not-equal comparison.
 			 */
@@ -196,7 +195,7 @@ namespace MysoreScript {
 			 * keyword are placed before those that (may) begin with identifiers so that
 			 * we can trivially disambiguate these cases.
 			 */
-			Rule expression   = call | closure | newExpr | arith_expr | variable |
+			Rule expression   = arith | call | closure | newExpr | variable |
 								string | array | null;
 			/**
 			 * Elements can be any expression.
