@@ -50,7 +50,7 @@ namespace MysoreScript {
 			/**
 			 * Value-esques are expressions that have higher precedence than any operation.
 			 */
-			Rule val_esque = val | call | newExpr | variable | string | array | null;
+			Rule val_esque = call | newExpr | variable | string | array | null | val;
 			/**
 			 * Multiply operations are values or multiply, or divide operations,
 			 * followed by a multiply symbol, followed by a value.  The sides can never
@@ -176,16 +176,14 @@ namespace MysoreScript {
 			/**
 			 * Callable expression.  
 			 */
-			Rule callable     = closure | newExpr | arith | variable | ('(' >> expression >> ')') | call;
+			Rule callable     = closure | newExpr | arith | variable | ('(' >> expression >> ')') | call | ('(' >> call >> ')');
 			/**
 			 * An instance is an expression that can have methods called on it. This
 			 * allows for a distinction between expressions that can be called, such
 			 * as closures, and expressions that can have methods called on them,
-			 * such as string or array literals. This is the same as an expression, but
-			 * with the call at the end so that each of the other possibilities will be
-			 * tried before hitting left recursion.
+			 * such as string or array literals.
 			 */
-			Rule instance     = closure | newExpr | arith_expr | variable | string | array | ('(' >> call >> ')');
+			Rule instance     = closure | newExpr | arith_expr | variable | string | array | call | ('(' >> call >> ')');
 			/**
 			 * All of the valid kinds of expression.  Note that the order places calls
 			 * first, as greedy matching will try cause them to then be matched in the
