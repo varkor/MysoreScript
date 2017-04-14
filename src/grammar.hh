@@ -139,7 +139,7 @@ namespace MysoreScript {
 			 * Identifiers are a letter followed by zero or more alphanumeric
 			 * characters.
 			 */
-			Rule identifier   = !reserved >> term(letter >> *(letter | digit));
+			Rule identifier   = !reserved >> term((letter | '_') >> *(letter | digit | '_'));
 			/**
 			 * Argument list.  Zero or more comma-separated arguments, wrapped in
 			 * brackets.
