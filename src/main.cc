@@ -77,6 +77,8 @@ int main(int argc, char **argv)
 	bool memstats = false;
 	// What file should we print?
 	const char *file = nullptr;
+	// Used to determine if MysoreScript has been invoked without a purpose, which should trigger the usage message.
+	bool shownHelp = false;
 	if (argc < 1)
 	{
 		usage(argv[0]);
@@ -105,12 +107,17 @@ int main(int argc, char **argv)
 				memstats = true;
 				break;
 			case 'h':
+				shownHelp = true;
 				usage(argv[0]);
 				break;
 			case 'c':
 				Interpreter::executionMethod = Interpreter::ExecutionMethod::forceCompiler;
 				break;
 		}
+	}
+	if (!repl && !shownHelp && file == nullptr) {
+		usage(argv[0]);
+		return EXIT_FAILURE;
 	}
 	c1 = clock();
 	//Initialise the garbage collection library.  This must be called before
