@@ -172,6 +172,7 @@ Obj StringCharAt(String *str, Selector sel, Obj idx)
 Obj StringDump(String *str, Selector sel)
 {
 	fwrite(str->characters, getInteger(str->length), 1, stderr);
+	fflush(stderr);
 	return nullptr;
 }
 /**
@@ -180,6 +181,7 @@ Obj StringDump(String *str, Selector sel)
 Obj StringPrint(String *str, Selector sel)
 {
 	fwrite(str->characters, getInteger(str->length), 1, stdout);
+	fflush(stdout);
 	return nullptr;
 }
 /**
