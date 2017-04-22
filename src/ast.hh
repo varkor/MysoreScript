@@ -223,14 +223,7 @@ namespace MysoreScript {
 			 */
 			bool isConstantExpression() override
 			{
-				for (auto& element : elements)
-				{
-					if (!element->isConstantExpression())
-					{
-						return false;
-					}
-				}
-				return true;
+				return false;
 			}
 			/**
 			 * Evaluate the expression.
