@@ -58,7 +58,7 @@ namespace MysoreScript {
 			 * can only be parents of multiply or divide operations (or children via
 			 * parenthetical expressions), not direct children.
 			 */
-			Rule mul_op = mul >> '*' >> mul;
+			Rule mul_op = (mul >> '*' >> mul) | (('(' >> arith >> ')') >> "&&" >> ('(' >> arith >> ')'));
 			/**
 			 * Divide operations follow the same syntax as multiply.
 			 */
@@ -76,7 +76,7 @@ namespace MysoreScript {
 			/**
 			 * Subtract operations follow the same structure as add.
 			 */
-			Rule sub_op = arith >> '-' >> arith;
+			Rule sub_op = (arith | ('(' >> arith >> ')')) >> '-' >> (('(' >> arith_expr >> ')') | mul);
 			/**
 			 * Not-equal comparison.
 			 */
@@ -183,7 +183,7 @@ namespace MysoreScript {
 			 * as closures, and expressions that can have methods called on them,
 			 * such as string or array literals.
 			 */
-			Rule instance     = closure | newExpr | arith_expr | variable | string | array | call | ('(' >> call >> ')');
+			Rule instance     = closure | newExpr | arith_expr | variable | string | array | ('(' >> expression >> ')') | call | ('(' >> call >> ')');
 			/**
 			 * All of the valid kinds of expression.  Note that the order places calls
 			 * first, as greedy matching will try cause them to then be matched in the
@@ -193,8 +193,7 @@ namespace MysoreScript {
 			 * keyword are placed before those that (may) begin with identifiers so that
 			 * we can trivially disambiguate these cases.
 			 */
-			Rule expression   = arith | call | closure | newExpr | variable |
-								string | array | null;
+			Rule expression   = arith | call | closure | newExpr | string | array | null;
 			/**
 			 * Elements can be any expression.
 			 */

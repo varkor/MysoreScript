@@ -1,10 +1,49 @@
 #include <iostream>
 #include <string.h>
 #include "parser.hh"
+#include "SWI-Prolog/SWI-cpp.h"
+
+/**
+ * The `mysorescript_call` predicate, in SWI-Prolog, for calling MysoreScript functions.
+ */
+using namespace MysoreScript;
+PREDICATE(mysorescript_call, 3) {
+	Obj* symbol = currentContext->lookupSymbol((char*) A1);
+	if (symbol == nullptr) {
+		std::cerr << "ERROR: Tried to call a non-existent method in MysoreScript from SWI-Prolog." << std::endl;
+		return FALSE;
+	}
+	Obj obj = *symbol;
+	if (!isInteger(obj) && obj->isa == &ClosureClass) {
+		Closure* closure = reinterpret_cast<Closure*>(obj);
+		std::list<Obj> parameters;
+		PlTail tail(A2);
+		PlTerm term;
+		while (tail.next(term)) {
+			parameters.push_back(createSmallInteger((int) term));
+		}
+		int arity = parameters.size();
+		Obj* arguments = new Obj[arity];
+		for (int i = 0; i < arity; ++ i) {
+			arguments[i] = parameters.front();
+			parameters.pop_front();
+		}
+		Obj returnValue = callCompiledClosure(closure->invoke, closure, arguments, arity);
+		delete[] arguments;
+		if (!isInteger(returnValue)) {
+			std::cerr << "ERROR: Can only pass integers as parameters to Prolog." << std::endl;
+			return FALSE;
+		}
+		A3 = getInteger(returnValue);
+		return TRUE;
+	}
+	std::cerr << "ERROR: Tried to call an object that wasn't a method in MysoreScript from SWI-Prolog." << std::endl;
+	return FALSE;
+}
 
 namespace MysoreScript {
 	
-	Interpreter::ExecutionMethod Interpreter::executionMethod = Interpreter::ExecutionMethod::justInTime;
+	Interpreter::ExecutionMethod Interpreter::executionMethod = Interpreter::ExecutionMethod::forceInterpreter;
 	using Interpreter::ExecutionMethod;
 	using Interpreter::executionMethod;
 	

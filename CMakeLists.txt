@@ -21,6 +21,9 @@ add_executable(mysorescript ${mysorescript_CXX_SRCS})
 # We're using Pegmatite in the RTTI mode.
 add_definitions(-DUSE_RTTI=1)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -I../lib")
+# We want to bind to the SWI-Prolog foreign language interface.
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/Cellar/swi-prolog/7.2.3_2/libexec/lib/swipl-7.2.3/lib/x86_64-darwin15.6.0 -lswipl")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__SWI_PROLOG__ -D__SWI_EMBEDDED__ -I/usr/local/Cellar/swi-prolog/7.2.3_2/libexec/lib/swipl-7.2.3/include")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set(CLANG_FLAGS "-Wdeprecated -Wno-zero-length-array -Wno-unknown-attributes")
@@ -86,6 +89,14 @@ set(CMAKE_SKIP_RPATH true)
 # Make sure that LLVM is able to find functions in the main executable.
 SET_TARGET_PROPERTIES(mysorescript PROPERTIES ENABLE_EXPORTS TRUE)
 
+# Start a default Prolog session up on execution.
+add_custom_command(
+	TARGET mysorescript
+	POST_BUILD
+	COMMAND swipl -q -f none -F none -g true -t "\"qsave_program('${CMAKE_CURRENT_BINARY_DIR}/swipl-header')\""
+	COMMAND cat ${CMAKE_CURRENT_BINARY_DIR}/swipl-header >> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mysorescript
+)
+
 option(BUILD_DOCUMENTATION "Use Doxygen to create the HTML based API documentation" OFF)
 if(BUILD_DOCUMENTATION)
 	FIND_PACKAGE(Doxygen)
@@ -102,5 +113,5 @@ option(ENABLE_TESTS "Enable the tests")
 
 if(ENABLE_TESTS)
 	enable_testing()
-	add_subdirectory("Tests")
+	add_subdirectory("tests")
 endif()
